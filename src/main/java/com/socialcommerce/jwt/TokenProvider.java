@@ -45,9 +45,13 @@ public class TokenProvider {
         long now = (new Date()).getTime();
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim("email", userEmail)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -79,18 +83,22 @@ public class TokenProvider {
         String authoritiesString = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .collect(Collectors.joining(","));
 
-        String email = claims.get("email").toString();
-        UserRole userRole = UserRole.valueOf(claims.get("role").toString());
+        String email = null;
+        if(claims.get("email") != null) {
+            email = claims.get("email").toString();
+            log.debug("claims에 들어있는 email, email: {}", email);
+        }
+
+        //UserRole userRole = claims.get("role") != null ? UserRole.valueOf(claims.get("role").toString()) : null;
 
         User user = User.builder()
                 .username(claims.getSubject())
                 .email(email)
-                .roles(authoritiesString)
                 .build();
 
         UserDetails principal = new CustomUserDetails(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-
+        log.debug("TokenProvider - authentication, authentication: {}", authentication);
         return authentication;
     }
 

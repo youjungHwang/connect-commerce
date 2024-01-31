@@ -26,11 +26,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Request Header 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
+        log.debug("Request Header 에서 토큰을 꺼냄, jwt: {}", jwt);
 
         if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+            log.debug("유효한 authentication 인지, authentication: {}", authentication);
+            log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
 
         }else {
             log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);

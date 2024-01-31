@@ -28,7 +28,6 @@ public class LoginRequestDto {
                 .profileImage("기본이미지경로")
                 .greeting("환영합니다!")
                 .isInfluencer(false)
-                .roles(String.valueOf(UserRole.ROLE_USER))
                 .build();
     }
 }

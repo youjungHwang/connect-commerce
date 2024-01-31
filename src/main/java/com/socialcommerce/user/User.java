@@ -23,6 +23,16 @@ public class User extends BaseTimeEntity{
     @Column(nullable = false)
     private String greeting;
     private Boolean isInfluencer;
-    private String roles;
+
+    public void profileUpdate(String username, String profileImage, String greeting) {
+        this.username = username;
+        this.profileImage = profileImage;
+        this.greeting = greeting;
+    }
+
+    public void passwordUpdate(String password) {
+        this.password = password;
+    }
+
 }
 

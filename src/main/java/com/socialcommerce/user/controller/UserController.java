@@ -35,6 +35,24 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{userId}")
+    public ResponseEntity<HttpException> userPasswordUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateDto userProfileUpdateDto){
+        if(userId.equals(customUserDetails.getUser().getId())) {
+            userService.userPasswordUpdate(userId, userProfileUpdateDto);
+            throw new HttpException(
+                    true,
+                    "유저 비밀번호 업데이트 성공",
+                    HttpStatus.OK
+            );
+        }else {
+            throw new HttpException(
+                    false,
+                    "유저 비밀번호 업데이트 권한 없음",
+                    HttpStatus.FORBIDDEN
+            );
+        }
+    }
+
 
 }
 

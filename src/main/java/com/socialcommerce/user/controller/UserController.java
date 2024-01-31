@@ -1,7 +1,7 @@
 package com.socialcommerce.user.controller;
 
 import com.socialcommerce.auth.CustomUserDetails;
-import com.socialcommerce.dto.common.ResponseDto;
+import com.socialcommerce.dto.common.HttpException;
 import com.socialcommerce.user.dto.UserProfileUpdateDto;
 import com.socialcommerce.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +16,22 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private static final int SUCCESS_CODE = 1;
-    private static final int FAILURE_CODE = -1;
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<ResponseDto<?>> userProfileUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateDto userProfileUpdateDto){
+    public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateDto userProfileUpdateDto){
         if(userId.equals(customUserDetails.getUser().getId())) {
             userService.userProfileUpdate(userId, userProfileUpdateDto);
-            return new ResponseEntity<>(new ResponseDto<>(SUCCESS_CODE, "유저 프로필 업데이트 성공", null), HttpStatus.OK);
+            throw new HttpException(
+                    true,
+                    "유저 프로필 업데이트 성공",
+                    HttpStatus.OK
+            );
         }else {
-            return new ResponseEntity<>(new ResponseDto<>(FAILURE_CODE, "유저 프로필 업데이트 권한 없음", null), HttpStatus.FORBIDDEN);
+            throw new HttpException(
+                    false,
+                    "유저 프로필 업데이트 권한 없음",
+                    HttpStatus.FORBIDDEN
+            );
         }
     }
 

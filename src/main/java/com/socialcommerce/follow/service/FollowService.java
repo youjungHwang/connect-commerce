@@ -36,9 +36,18 @@ public class FollowService {
 
         followRepository.addFollow(fromUser, toUser);
     }
-//    @Transactional
-//    public void unFollow(Long fromUserId, Long toUserId) {
-//        User[] users = LongTypeToEntity(fromUserId, toUserId);
-//        followRepository.removeFollow(users[0], users[1]);
-//    }
+    @Transactional
+    public void unFollow(Long fromUserId, Long toUserId) {
+        if (fromUserId == null || toUserId == null) {
+            log.error("unFollow 메소드 호출 시 fromUserId 또는 toUserId가 null입니다. fromUserId: {}, toUserId: {}", fromUserId, toUserId);
+            throw new IllegalArgumentException("팔로우 관련 사용자 ID는 null일 수 없습니다.");
+        }
+
+        User fromUser = userRepository.findById(fromUserId)
+                .orElseThrow(() -> new UsernameNotFoundException("팔로우하는 사용자를 찾을 수 없습니다."));
+        User toUser = userRepository.findById(toUserId)
+                .orElseThrow(() -> new UsernameNotFoundException("팔로우되는 사용자를 찾을 수 없습니다."));
+
+        followRepository.removeFollow(fromUser, toUser);
+    }
 }

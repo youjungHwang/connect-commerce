@@ -1,7 +1,7 @@
 package com.socialcommerce.follow.controller;
 
 import com.socialcommerce.auth.CustomUserDetails;
-import com.socialcommerce.dto.common.ResponseDto;
+import com.socialcommerce.dto.common.HttpException;
 import com.socialcommerce.follow.service.FollowService;
 import com.socialcommerce.user.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,14 +26,12 @@ import java.util.Collections;
 @RestController
 public class FollowController { // + 실패의 경우도 개발 해야 함
     private final FollowService followService;
-    private static final int SUCCESS_CODE = 1;
-    private static final int ERROR_CODE = -1;
     private static final Logger logger = LoggerFactory.getLogger(FollowController.class);
 
 
 
     @PostMapping("/{toUserId}")
-    public ResponseEntity<ResponseDto<?>> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId,
+    public ResponseEntity<HttpException> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId,
                                                  HttpServletRequest request) {
         String userInfo = customUserDetails.getUser().toString();
         Long userId = customUserDetails.getUser().getId();
@@ -52,13 +50,21 @@ public class FollowController { // + 실패의 경우도 개발 해야 함
             throw new IllegalStateException("CustomUserDetails or User is not properly set");
         }
         followService.follow(fromUserId, toUserId);
-        return new ResponseEntity<>(new ResponseDto<>(SUCCESS_CODE, "팔로우 성공", null), HttpStatus.OK);
+
+        throw new HttpException(
+                true,
+                "팔로우 성공",
+                HttpStatus.OK
+        );
     }
 
-
-//    @DeleteMapping("/{toUserId}")
-//    public ResponseEntity<ResponseDto<?>> unFollow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId) {
-//        followService.unFollow(customUserDetails.getUser().getId(), toUserId);
-//        return new ResponseEntity<>(new ResponseDto<>(SUCCESS_CODE, "언팔로우 성공", null), HttpStatus.OK);
-//    }
+    @DeleteMapping("/{toUserId}")
+    public ResponseEntity<HttpException> unFollow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId) {
+        followService.unFollow(customUserDetails.getUser().getId(), toUserId);
+        throw new HttpException(
+                true,
+                "팔로우 해제 성공",
+                HttpStatus.OK
+        );
+    }
 }

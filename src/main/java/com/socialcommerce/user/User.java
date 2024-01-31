@@ -34,5 +34,18 @@ public class User extends BaseTimeEntity{
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + (password != null ? "[PROTECTED]" : "null") + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", greeting='" + greeting + '\'' +
+                ", isInfluencer=" + isInfluencer +
+                '}';
+    }
+
 }
 

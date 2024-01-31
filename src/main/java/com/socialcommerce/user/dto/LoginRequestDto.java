@@ -1,7 +1,6 @@
 package com.socialcommerce.user.dto;
 
 import com.socialcommerce.user.User;
-import com.socialcommerce.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

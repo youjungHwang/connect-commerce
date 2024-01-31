@@ -20,10 +20,12 @@ public class CustomUserDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
+        System.out.println("CustomUserDetails 생성자 호출");
         this.user = user;
-        this.id = user.getId(); // User 객체에서 ID를 가져옵니다.
-        // "ROLE_USER" 권한을 단일 요소로 가지는 리스트를 생성하여 authorities에 할당합니다.
+        this.id = user.getId();
+        System.out.println("User ID: " + id);
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        System.out.println("Authorities 설정됨: " + authorities);
     }
 
 
@@ -34,11 +36,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
+        System.out.println("getPassword 호출");
         return user.getPassword();
     }
 
     @Override
     public String getUsername() {
+        System.out.println("getUsername 호출");
         return user.getEmail();
     }
 

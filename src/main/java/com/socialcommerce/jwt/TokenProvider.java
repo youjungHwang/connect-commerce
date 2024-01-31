@@ -2,7 +2,6 @@ package com.socialcommerce.jwt;
 
 import com.socialcommerce.auth.CustomUserDetails;
 import com.socialcommerce.user.User;
-import com.socialcommerce.user.UserRole;
 import com.socialcommerce.jwt.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -46,11 +45,14 @@ public class TokenProvider {
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUser().getId();
+        log.debug("토큰에 추가된 userId 클레임: {}", userId);
         String userEmail = userDetails.getUsername();
 
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim("userId", userId)
                 .claim("email", userEmail)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -74,6 +76,7 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
+        log.debug("getAuthentication의 accessToken, accessToken: {}", accessToken);
         Claims claims = parseClaims(accessToken);
 
         if(claims.get(AUTHORITIES_KEY) == null) {
@@ -89,14 +92,19 @@ public class TokenProvider {
             log.debug("claims에 들어있는 email, email: {}", email);
         }
 
-        //UserRole userRole = claims.get("role") != null ? UserRole.valueOf(claims.get("role").toString()) : null;
+        Long userId = claims.get("userId", Long.class);
+        log.debug("클레임에서 추출한 userId: {}", userId); // null
 
         User user = User.builder()
+                .id(userId)
                 .username(claims.getSubject())
                 .email(email)
                 .build();
 
-        UserDetails principal = new CustomUserDetails(user);
+        log.debug("User 객체 생성 후 정보: {}", user);
+
+        CustomUserDetails principal = new CustomUserDetails(user);
+        log.debug("CustomUserDetails 생성 후 ID: {}", principal.getId());
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         log.debug("TokenProvider - authentication, authentication: {}", authentication);
         return authentication;

@@ -10,6 +10,7 @@ import com.socialcommerce.user.dto.LoginResponseDto;
 import com.socialcommerce.jwt.dto.TokenDto;
 import com.socialcommerce.jwt.dto.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -33,6 +35,7 @@ public class AuthService {
 
         User user = loginRequestDto.toUser(passwordEncoder);
         User savedUser = userRepository.save(user);
+        log.debug("저장된 User 객체의 ID: {}", savedUser.getId());
         return LoginResponseDto.loginResponseDto(savedUser);
     }
     @Transactional

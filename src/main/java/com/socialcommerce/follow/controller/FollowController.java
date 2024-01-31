@@ -35,11 +35,11 @@ public class FollowController { // + 실패의 경우도 개발 해야 함
     @PostMapping("/{toUserId}")
     public ResponseEntity<ResponseDto<?>> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId,
                                                  HttpServletRequest request) {
-        User userExist = customUserDetails.getUser();
+        String userInfo = customUserDetails.getUser().toString();
         Long userId = customUserDetails.getUser().getId();
 
         System.out.println("----------------------------");
-        System.out.println("customUserDetails.getUser(): " + userExist);
+        System.out.println("customUserDetails.getUser().toString(): " + userInfo);
         System.out.println("로그인 한 User ID를 확인: " + userId);
         System.out.println("----------------------------");
 

@@ -18,7 +18,6 @@ public class LoginRequestDto {
         return new UsernamePasswordAuthenticationToken(email, password);
     }
 
-    // LoginRequestDto 클래스 내에 있는 toUser 메서드
     public User toUser(PasswordEncoder passwordEncoder) {
         return User.builder()
                 .email(email)

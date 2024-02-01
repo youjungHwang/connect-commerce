@@ -1,7 +1,6 @@
 package com.socialcommerce.dto.common;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

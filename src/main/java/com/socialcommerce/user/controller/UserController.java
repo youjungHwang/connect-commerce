@@ -2,7 +2,7 @@ package com.socialcommerce.user.controller;
 
 import com.socialcommerce.auth.CustomUserDetails;
 import com.socialcommerce.dto.common.HttpException;
-import com.socialcommerce.user.dto.UserProfileUpdateDto;
+import com.socialcommerce.user.dto.UserProfileUpdateRequestDto;
 import com.socialcommerce.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateDto userProfileUpdateDto){
-        if(userId.equals(customUserDetails.getUser().getId())) {
+    public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
+        if(userId.equals(customUserDetails.getUser().getUserid())) {
             userService.userProfileUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
                     true,
@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<HttpException> userPasswordUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateDto userProfileUpdateDto){
-        if(userId.equals(customUserDetails.getUser().getId())) {
+    public ResponseEntity<HttpException> userPasswordUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
+        if(userId.equals(customUserDetails.getUser().getUserid())) {
             userService.userPasswordUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
                     true,

@@ -15,13 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
-//    private User[] LongTypeToEntity(Long fromUserId, Long toUserId){
-//        User fromUser = userRepository.findById(fromUserId)
-//                .orElseThrow(() -> new UsernameNotFoundException("팔로우하는 유저를 찾을 수 없습니다."));
-//        User toUser = userRepository.findById(toUserId)
-//                .orElseThrow(() -> new UsernameNotFoundException("팔로우받는 유저를 찾을 수 없습니다."));
-//        return new User[]{fromUser, toUser};
-//    }
     @Transactional
     public void follow(Long fromUserId, Long toUserId) {
         if (fromUserId == null || toUserId == null) {

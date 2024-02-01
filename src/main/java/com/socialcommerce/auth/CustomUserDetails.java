@@ -1,17 +1,12 @@
 package com.socialcommerce.auth;
 
 import com.socialcommerce.user.User;
-import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -22,17 +17,15 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user) {
         System.out.println("CustomUserDetails 생성자 호출");
         this.user = user;
-        this.id = user.getId();
+        this.id = user.getUserid();
         System.out.println("User ID: " + id);
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         System.out.println("Authorities 설정됨: " + authorities);
     }
 
-
     public Long getId() {
         return id;
     }
-
 
     @Override
     public String getPassword() {

@@ -1,6 +1,7 @@
 package com.socialcommerce.follow;
 
-import com.socialcommerce.BaseTimeEntity;
+import com.socialcommerce.feed.Activity;
+import com.socialcommerce.feed.ActivityType;
 import com.socialcommerce.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,11 +17,9 @@ import lombok.NoArgsConstructor;
                 )
         }
 )
+@DiscriminatorValue("FOLLOW")
 @Entity
-public class Follow extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Follow extends Activity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="from_user_id")
@@ -34,5 +33,11 @@ public class Follow extends BaseTimeEntity {
         this.fromUser = fromUser;
         this.toUser = toUser;
     }
+
+    @Override
+    public ActivityType getActivityType() {
+        return ActivityType.FOLLOW;
+    }
+
 }
 

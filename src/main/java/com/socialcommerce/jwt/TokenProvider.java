@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Arrays;
@@ -45,8 +44,7 @@ public class TokenProvider {
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getUser().getId();
-        log.debug("토큰에 추가된 userId 클레임: {}", userId);
+        Long userId = userDetails.getUser().getUserid();
         String userEmail = userDetails.getUsername();
 
         String accessToken = Jwts.builder()
@@ -93,10 +91,10 @@ public class TokenProvider {
         }
 
         Long userId = claims.get("userId", Long.class);
-        log.debug("클레임에서 추출한 userId: {}", userId); // null
+        log.debug("클레임에서 추출한 userId: {}", userId);
 
         User user = User.builder()
-                .id(userId)
+                .userid(userId)
                 .username(claims.getSubject())
                 .email(email)
                 .build();
@@ -106,7 +104,6 @@ public class TokenProvider {
         CustomUserDetails principal = new CustomUserDetails(user);
         log.debug("CustomUserDetails 생성 후 ID: {}", principal.getId());
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-        log.debug("TokenProvider - authentication, authentication: {}", authentication);
         return authentication;
     }
 

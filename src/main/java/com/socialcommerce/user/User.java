@@ -19,7 +19,7 @@ public class User extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long userid;
+    private Long id;
     @Column(unique=true)
     private String email;
     @Column(nullable = false)
@@ -57,7 +57,7 @@ public class User extends BaseTimeEntity{
     @Override
     public String toString() {
         return "User{" +
-                "id=" + userid +
+                "id=" + id +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + (password != null ? "[PROTECTED]" : "null") + '\'' +

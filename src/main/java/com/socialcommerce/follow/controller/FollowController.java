@@ -26,14 +26,14 @@ public class FollowController {
     public ResponseEntity<HttpException> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId,
                                                  HttpServletRequest request) {
         String userInfo = customUserDetails.getUser().toString();
-        Long userId = customUserDetails.getUser().getUserid();
+        Long userId = customUserDetails.getUser().getId();
 
         System.out.println("----------------------------");
         System.out.println("customUserDetails.getUser().toString(): " + userInfo);
         System.out.println("로그인 한 User ID를 확인: " + userId);
         System.out.println("----------------------------");
 
-        Long fromUserId = customUserDetails.getUser().getUserid();
+        Long fromUserId = customUserDetails.getUser().getId();
         if (fromUserId == null) {
             throw new IllegalStateException("fromUserId is null입니다.");
         }
@@ -52,7 +52,7 @@ public class FollowController {
 
     @DeleteMapping("/{toUserId}")
     public ResponseEntity<HttpException> unFollow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long toUserId) {
-        followService.unFollow(customUserDetails.getUser().getUserid(), toUserId);
+        followService.unFollow(customUserDetails.getUser().getId(), toUserId);
         throw new HttpException(
                 true,
                 "팔로우 해제 성공",

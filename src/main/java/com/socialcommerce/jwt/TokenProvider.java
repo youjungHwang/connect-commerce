@@ -44,7 +44,7 @@ public class TokenProvider {
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getUser().getUserid();
+        Long userId = userDetails.getUser().getId();
         String userEmail = userDetails.getUsername();
 
         String accessToken = Jwts.builder()
@@ -94,7 +94,7 @@ public class TokenProvider {
         log.debug("클레임에서 추출한 userId: {}", userId);
 
         User user = User.builder()
-                .userid(userId)
+                .id(userId)
                 .username(claims.getSubject())
                 .email(email)
                 .build();

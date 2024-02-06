@@ -35,7 +35,7 @@ public class AuthService {
 
         User user = loginRequestDto.toUser(passwordEncoder);
         User savedUser = userRepository.save(user);
-        log.debug("저장된 User 객체의 ID: {}", savedUser.getUserid());
+        log.debug("저장된 User 객체의 ID: {}", savedUser.getId());
         return LoginResponseDto.loginResponseDto(savedUser);
     }
     @Transactional

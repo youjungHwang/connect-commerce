@@ -15,7 +15,7 @@ public abstract class Activity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_id")
-    private Long activityId;
+    private Long id;
 
     @OneToMany(mappedBy = "activity")
     private List<Feed> feeds;

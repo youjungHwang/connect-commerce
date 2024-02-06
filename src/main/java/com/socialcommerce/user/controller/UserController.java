@@ -19,7 +19,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
-        if(userId.equals(customUserDetails.getUser().getUserid())) {
+        if(userId.equals(customUserDetails.getUser().getId())) {
             userService.userProfileUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
                     true,
@@ -37,7 +37,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<HttpException> userPasswordUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
-        if(userId.equals(customUserDetails.getUser().getUserid())) {
+        if(userId.equals(customUserDetails.getUser().getId())) {
             userService.userPasswordUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
                     true,

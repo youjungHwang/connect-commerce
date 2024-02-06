@@ -7,6 +7,7 @@ import com.socialcommerce.post.Post;
 import com.socialcommerce.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @DiscriminatorValue("COMMENT")
 @Entity
 public class Comment extends Activity {

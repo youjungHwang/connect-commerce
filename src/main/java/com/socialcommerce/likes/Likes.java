@@ -7,12 +7,14 @@ import com.socialcommerce.post.Post;
 import com.socialcommerce.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @DiscriminatorValue("LIKES")
 @Entity
 public class Likes extends Activity {

@@ -17,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user) {
         System.out.println("CustomUserDetails 생성자 호출");
         this.user = user;
-        this.id = user.getUserid();
+        this.id = user.getId();
         System.out.println("User ID: " + id);
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         System.out.println("Authorities 설정됨: " + authorities);

@@ -1,7 +1,9 @@
 package com.socialcommerce.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialcommerce.BaseTimeEntity;
 import com.socialcommerce.comment.Comment;
+import com.socialcommerce.feed.Activity;
 import com.socialcommerce.feed.Feed;
 import com.socialcommerce.likes.Likes;
 import com.socialcommerce.post.Post;
@@ -30,19 +32,18 @@ public class User extends BaseTimeEntity{
     @Column(nullable = false)
     private String greeting;
     private Boolean isInfluencer;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts = new ArrayList<>();
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Feed> feeds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    // 사용자가 수행한 모든 활동
+    @OneToMany(mappedBy = "actionUser")
+    @JsonIgnore
+    private List<Activity> activitiesPerformed;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Likes> likes = new ArrayList<>();
-
+    // 다른 사용자들이 해당 사용자를 대상으로 수행한 모든 활동
+    @OneToMany(mappedBy = "targetUser")
+    @JsonIgnore
+    private List<Activity> activitiesTargeted;
 
     public void profileUpdate(String username, String profileImage, String greeting) {
         this.username = username;
@@ -53,19 +54,5 @@ public class User extends BaseTimeEntity{
     public void passwordUpdate(String password) {
         this.password = password;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + (password != null ? "[PROTECTED]" : "null") + '\'' +
-                ", profileImage='" + profileImage + '\'' +
-                ", greeting='" + greeting + '\'' +
-                ", isInfluencer=" + isInfluencer +
-                '}';
-    }
-
 }
 

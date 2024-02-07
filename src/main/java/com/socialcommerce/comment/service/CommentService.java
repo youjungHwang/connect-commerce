@@ -22,15 +22,17 @@ public class CommentService {
 
     @Transactional
     public void addCommentToPost(Long userId, Long postId ,CreateCommentRequestDto createCommentRequestDto){
-        User user = userRepository.findById(userId)
-                .orElseThrow( ()-> new RuntimeException("해당 유저는 없습니다."));
+        User actionUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("해당 유저는 없습니다."));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("해당 포스트는 없습니다."));
+        User targetUser = post.getActionUser(); // 댓글이 달릴 게시물(Post)의 작성자 -> Comment의 targetUser로 설정
 
         Comment comment = Comment.builder()
                 .content(createCommentRequestDto.getContent())
                 .post(post)
-                .user(user)
+                .actionUser(actionUser)
+                .targetUser(targetUser)
                 .build();
         commentRepository.save(comment);
     }

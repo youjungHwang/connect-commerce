@@ -1,5 +1,6 @@
 package com.socialcommerce.comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialcommerce.feed.Activity;
 import com.socialcommerce.feed.ActivityType;
 import com.socialcommerce.likes.Likes;
@@ -11,13 +12,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
-@AllArgsConstructor
+
+
 @NoArgsConstructor
 @Getter
-@Builder
 @DiscriminatorValue("COMMENT")
 @Entity
 public class Comment extends Activity {
@@ -26,18 +25,31 @@ public class Comment extends Activity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<Likes> likes = new ArrayList<>();;
+    @Builder
+    public Comment(Long id, User actionUser, User targetUser, String content, Post post) {
+        super(id, actionUser, targetUser);
+        this.content = content;
+        this.post = post;
+    }
 
     @Override
     public ActivityType getActivityType() {
         return ActivityType.COMMENT;
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + getId() +
+                ", actionUser=" + (getActionUser() != null ? getActionUser().getId() : "null") +
+                ", targetUser=" + (getTargetUser() != null ? getTargetUser().getId() : "null") +
+                ", content='" + content + '\'' +
+                ", post=" + (post != null ? post.getId() : "null") +
+                '}';
+    }
+
 
 }

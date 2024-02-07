@@ -17,7 +17,6 @@ public class CommentController {
 
     private final LikesService likesService;
 
-
     @PostMapping("/{commentId}/likes")
     public ResponseEntity<HttpException> addLikesToComment(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                            @PathVariable Long commentId){

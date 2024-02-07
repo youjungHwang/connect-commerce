@@ -3,6 +3,7 @@ package com.socialcommerce.follow.controller;
 import com.socialcommerce.auth.CustomUserDetails;
 import com.socialcommerce.dto.common.HttpException;
 import com.socialcommerce.follow.service.FollowService;
+import com.sun.jdi.request.DuplicateRequestException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,8 @@ public class FollowController {
         String userInfo = customUserDetails.getUser().toString();
         Long userId = customUserDetails.getUser().getId();
 
-        System.out.println("----------------------------");
         System.out.println("customUserDetails.getUser().toString(): " + userInfo);
         System.out.println("로그인 한 User ID를 확인: " + userId);
-        System.out.println("----------------------------");
 
         Long fromUserId = customUserDetails.getUser().getId();
         if (fromUserId == null) {
@@ -41,6 +40,11 @@ public class FollowController {
         if (customUserDetails == null || customUserDetails.getUser() == null) {
             throw new IllegalStateException("CustomUserDetails or User is not properly set");
         }
+
+        if(userId.equals(toUserId)){
+            throw new DuplicateRequestException("자기 자신을 팔로우할 수 없습니다.");
+        }
+
         followService.follow(fromUserId, toUserId);
 
         throw new HttpException(

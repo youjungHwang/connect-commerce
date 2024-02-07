@@ -19,31 +19,36 @@ public class LikesService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final LikesRepository likesRepository;
-
     private final CommentRepository commentRepository;
 
     @Transactional
     public void addLikesToPost(Long userId, Long postId){
-        User user = userRepository.findById(userId)
-                .orElseThrow( ()-> new RuntimeException("해당 유저는 없습니다."));
+        User actionUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("해당 유저는 없습니다."));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("해당 포스트는 없습니다."));
+        User targetUser = post.getActionUser();
+
         Likes likes = Likes.builder()
-                .post(post)
-                .user(user)
+                .relatedActivity(post)
+                .actionUser(actionUser)
+                .targetUser(targetUser)
                 .build();
         likesRepository.save(likes);
     }
 
     @Transactional
     public void addLikesToComment(Long userId, Long commentId){
-        User user = userRepository.findById(userId)
-                .orElseThrow( ()-> new RuntimeException("해당 유저는 없습니다."));
+        User actionUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("해당 유저는 없습니다."));
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("해당 댓글은 없습니다."));
+        User targetUser = comment.getActionUser();
+
         Likes likes = Likes.builder()
-                .comment(comment)
-                .user(user)
+                .relatedActivity(comment)
+                .actionUser(actionUser)
+                .targetUser(targetUser)
                 .build();
         likesRepository.save(likes);
     }

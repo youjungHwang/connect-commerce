@@ -4,8 +4,11 @@ import com.socialcommerce.feed.Activity;
 import com.socialcommerce.feed.ActivityType;
 import com.socialcommerce.user.User;
 import jakarta.persistence.*;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @NoArgsConstructor
 @Getter
@@ -13,31 +16,32 @@ import lombok.NoArgsConstructor;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "follow_uq",
-                        columnNames = {"from_user_id", "to_user_id"}
+                        columnNames = {"action_user_id", "target_user_id"}
                 )
         }
 )
 @DiscriminatorValue("FOLLOW")
 @Entity
 public class Follow extends Activity {
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="from_user_id")
-    private User fromUser;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="to_user_id")
-    private User toUser;
-
-    public Follow(User fromUser, User toUser) {
-        this.fromUser = fromUser;
-        this.toUser = toUser;
+    @Builder
+    public Follow(Long id, User actionUser, User targetUser) {
+        super(id, actionUser, targetUser);
     }
 
     @Override
     public ActivityType getActivityType() {
         return ActivityType.FOLLOW;
     }
+
+    @Override
+    public String toString() {
+        return "Follow{" +
+                "id=" + getId() +
+                ", actionUser=" + (getActionUser() != null ? getActionUser().getId() : "null") +
+                ", targetUser=" + (getTargetUser() != null ? getTargetUser().getId() : "null") +
+                '}';
+    }
+
 
 }
 

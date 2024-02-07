@@ -21,7 +21,7 @@ public class PostService {
         User user = userRepository.findById(userId).orElseThrow( ()-> new RuntimeException("해당 유저는 없습니다."));
         Post post = Post.builder()
                 .content(createPostRequestDto.getContent())
-                .user(user)
+                .actionUser(user)
                 .build();
 
         postRepository.save(post);

@@ -1,5 +1,6 @@
 package com.socialcommerce.follow.service;
 
+import com.socialcommerce.follow.Follow;
 import com.socialcommerce.follow.FollowRepository;
 import com.socialcommerce.user.User;
 import com.socialcommerce.user.UserRepository;
@@ -17,30 +18,25 @@ public class FollowService {
     private final UserRepository userRepository;
     @Transactional
     public void follow(Long fromUserId, Long toUserId) {
-        if (fromUserId == null || toUserId == null) {
-            log.error("follow 메소드 호출 시 fromUserId 또는 toUserId가 null입니다. fromUserId: {}, toUserId: {}", fromUserId, toUserId);
-            throw new IllegalArgumentException("팔로우하려는 사용자 ID는 null일 수 없습니다.");
-        }
-
-        User fromUser = userRepository.findById(fromUserId)
+        User actionUser = userRepository.findById(fromUserId)
                 .orElseThrow(() -> new UsernameNotFoundException("팔로우하는 사용자를 찾을 수 없습니다."));
-        User toUser = userRepository.findById(toUserId)
+        User targetUser = userRepository.findById(toUserId)
                 .orElseThrow(() -> new UsernameNotFoundException("팔로우되는 사용자를 찾을 수 없습니다."));
 
-        followRepository.addFollow(fromUser, toUser);
+        // Follow 인스턴스 생성에 빌더 패턴 사용
+        Follow follow = Follow.builder()
+                .actionUser(actionUser)
+                .targetUser(targetUser)
+                .build();
+        followRepository.save(follow);
     }
     @Transactional
     public void unFollow(Long fromUserId, Long toUserId) {
-        if (fromUserId == null || toUserId == null) {
-            log.error("unFollow 메소드 호출 시 fromUserId 또는 toUserId가 null입니다. fromUserId: {}, toUserId: {}", fromUserId, toUserId);
-            throw new IllegalArgumentException("팔로우 관련 사용자 ID는 null일 수 없습니다.");
-        }
-
-        User fromUser = userRepository.findById(fromUserId)
+        User actionUser = userRepository.findById(fromUserId)
                 .orElseThrow(() -> new UsernameNotFoundException("팔로우하는 사용자를 찾을 수 없습니다."));
-        User toUser = userRepository.findById(toUserId)
+        User targetUser = userRepository.findById(toUserId)
                 .orElseThrow(() -> new UsernameNotFoundException("팔로우되는 사용자를 찾을 수 없습니다."));
 
-        followRepository.removeFollow(fromUser, toUser);
+        followRepository.removeFollow(actionUser, targetUser);
     }
 }

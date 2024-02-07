@@ -8,11 +8,13 @@ import com.socialcommerce.likes.service.LikesService;
 import com.socialcommerce.post.dto.CreatePostRequestDto;
 import com.socialcommerce.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
 @RestController
@@ -36,6 +38,7 @@ public class PostController {
                 HttpStatus.OK
         );
     }
+
 
     @PutMapping("/{postId}")
     public ResponseEntity<HttpException> updatePost(){

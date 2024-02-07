@@ -8,27 +8,27 @@ import java.util.Optional;
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     Logger log = LoggerFactory.getLogger(FollowRepository.class);
 
-    boolean existsByFromUserAndToUser(User fromUser, User toUser);
-    Optional<Follow> findByFromUserAndToUser(User fromUser, User toUser);
+    boolean existsByActionUserAndTargetUser(User actionUser, User targetUser);
+    Optional<Follow> findByActionUserAndTargetUser(User actionUser, User targetUser);
 
-    default void addFollow(User fromUser, User toUser) {
-        if (fromUser == null || toUser == null) {
-            log.error("addFollow 메소드에서 fromUser 또는 toUser가 null입니다.");
-            throw new IllegalArgumentException("fromUser와 toUser는 null일 수 없습니다.");
+    default void addFollow(User actionUser, User targetUser) {
+        if (actionUser == null || targetUser == null) {
+            log.error("addFollow 메소드에서 actionUser 또는 targetUser가 null입니다.");
+            throw new IllegalArgumentException("actionUser와 targetUser는 null일 수 없습니다.");
         }
 
-        if (!existsByFromUserAndToUser(fromUser, toUser)) {
-            save(new Follow(fromUser, toUser));
+        if (!existsByActionUserAndTargetUser(actionUser, targetUser)) {
+            save(new Follow(null, actionUser, targetUser));
         }
     }
 
-    default void removeFollow(User fromUser, User toUser) {
-        if (fromUser == null || toUser == null) {
-            log.error("removeFollow 메소드에서 fromUser 또는 toUser가 null입니다.");
-            throw new IllegalArgumentException("fromUser와 toUser는 null일 수 없습니다.");
+    default void removeFollow(User actionUser, User targetUser) {
+        if (actionUser == null || targetUser == null) {
+            log.error("removeFollow 메소드에서 actionUser 또는 targetUser가 null입니다.");
+            throw new IllegalArgumentException("actionUser와 targetUser는 null일 수 없습니다.");
         }
 
-        findByFromUserAndToUser(fromUser, toUser)
+        findByActionUserAndTargetUser(actionUser, targetUser)
                 .ifPresent(this::delete);
     }
 }

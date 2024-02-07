@@ -10,13 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserProfileUpdateRequestDto {
-    @NotBlank
     private String username;
-    @NotBlank
     private String password;
-    @NotBlank
     private String profileImage;
-    @NotBlank
     private String greeting;
 
     public UserProfileUpdateRequestDto(String username, String profileImage, String greeting) {

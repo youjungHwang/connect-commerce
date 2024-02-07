@@ -11,28 +11,36 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
-@Builder
 @DiscriminatorValue("LIKES")
 @Entity
 public class Likes extends Activity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "related_id")
+    private Activity relatedActivity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @Builder
+    public Likes(Long id, User actionUser, User targetUser, Activity relatedActivity) {
+        super(id, actionUser, targetUser);
+        this.relatedActivity = relatedActivity;
+    }
 
     @Override
     public ActivityType getActivityType() {
         return ActivityType.LIKE;
     }
+
+    @Override
+    public String toString() {
+        return "Likes{" +
+                "id=" + getId() +
+                ", actionUser=" + (getActionUser() != null ? getActionUser().getId() : "null") +
+                ", targetUser=" + (getTargetUser() != null ? getTargetUser().getId() : "null") +
+                ", relatedActivity=" + (relatedActivity != null ? relatedActivity.getId() : "null") +
+                '}';
+    }
+
 
 }

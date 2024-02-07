@@ -1,12 +1,13 @@
 package com.socialcommerce.feed;
 
 import com.socialcommerce.BaseTimeEntity;
+import com.socialcommerce.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-
+@NoArgsConstructor
 @Getter
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "activity_type", discriminatorType = DiscriminatorType.STRING)
@@ -17,8 +18,26 @@ public abstract class Activity extends BaseTimeEntity {
     @Column(name = "activity_id")
     private Long id;
 
-    @OneToMany(mappedBy = "activity")
-    private List<Feed> feeds;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "action_user_id")
+    private User actionUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_user_id", nullable = true)
+    private User targetUser;
+
+    public Activity(Long id, User actionUser) {
+        super();
+        this.id = id;
+        this.actionUser = actionUser;
+    }
+
+    public Activity(Long id, User actionUser, User targetUser) {
+        super();
+        this.id = id;
+        this.actionUser = actionUser;
+        this.targetUser = targetUser;
+    }
 
     public abstract ActivityType getActivityType();
 }

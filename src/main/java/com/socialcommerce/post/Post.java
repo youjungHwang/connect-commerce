@@ -14,17 +14,11 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
 @DiscriminatorValue("POST")
 @Entity
 public class Post extends Activity {
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Column(nullable = false)
     private String content;
@@ -32,12 +26,27 @@ public class Post extends Activity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Likes> likes = new ArrayList<>();
+    @Builder
+    public Post(Long id, User actionUser, String content, List<Comment> comments) {
+        super(id, actionUser); // Activity 클래스에 있는 생성자를 호출
+        this.content = content;
+        this.comments = comments;
+    }
 
     @Override
     public ActivityType getActivityType() {
         return ActivityType.POST;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + getId() +
+                ", actionUser=" + (getActionUser() != null ? getActionUser().getId() : "null") +
+                ", content='" + content + '\'' +
+                ", commentsCount=" + (comments != null ? comments.size() : 0) +
+                '}';
+    }
+
 
 }

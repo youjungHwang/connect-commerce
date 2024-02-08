@@ -14,6 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT f.targetUser.id FROM Follow f WHERE f.actionUser.id = :userId")
     List<Long> findFollowingIdsByUserId(@Param("userId") Long userId);
-
 }
 

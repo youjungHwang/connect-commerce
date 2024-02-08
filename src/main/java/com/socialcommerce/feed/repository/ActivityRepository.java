@@ -16,4 +16,6 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
             "ORDER BY a.createdDate DESC")
     List<Activity> findActivitiesByFollowingIds(@Param("followingIds") List<Long> followingIds);
 
+    @Query("SELECT a FROM Activity a WHERE a.actionUser.id IN :followersIds ORDER BY a.createdDate DESC")
+    List<Activity> findActivitiesByFollowersIds(@Param("followersIds") List<Long> followersIds);
 }

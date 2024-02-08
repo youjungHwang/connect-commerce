@@ -11,6 +11,7 @@ import java.util.List;
 public class FeedResponseDto {
     private UserForFeedResponseDto user;
     private UserForFeedResponseDto targetUser;
+    private UserForFeedResponseDto actionUser;
     private ActivityForFeedResponseDto activity;
 
     // 포스팅 관련 정보

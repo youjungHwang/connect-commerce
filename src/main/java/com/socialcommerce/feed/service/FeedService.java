@@ -5,6 +5,7 @@ import com.socialcommerce.feed.Activity;
 import com.socialcommerce.feed.dto.ActivityForFeedResponseDto;
 import com.socialcommerce.feed.dto.FeedResponseDto;
 import com.socialcommerce.feed.repository.ActivityRepository;
+import com.socialcommerce.follow.FollowRepository;
 import com.socialcommerce.likes.Likes;
 import com.socialcommerce.post.Post;
 import com.socialcommerce.post.PostRepository;
@@ -27,6 +28,7 @@ public class FeedService {
     private final UserRepository userRepository;
     private final ActivityRepository activityRepository;
     private final PostRepository postRepository;
+    private final FollowRepository followRepository;
 
     @Transactional
     public List<FeedResponseDto> getFollowingUsersActivities(Long userId){
@@ -36,7 +38,7 @@ public class FeedService {
                 .map(activity -> FeedResponseDto.builder()
                         .user(convertToUserDto(activity.getActionUser()))
                         .targetUser(convertToUserDto(activity.getTargetUser()))
-                        .activity(convertToActivityDto(activity))
+                        .activity(convertToBasicActivityDto(activity))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -62,9 +64,24 @@ public class FeedService {
 
             feedResponses.add(feedResponse);
         }
-
         return feedResponses;
     }
+
+    @Transactional
+    public List<FeedResponseDto> getFollowersActivities(Long userId){
+        List<Long> followersIds = followRepository.findFollowerIdsByUserId(userId);
+        List<Activity> activities = activityRepository.findActivitiesByFollowersIds(followersIds);
+        return activities.stream()
+                .map(activity -> FeedResponseDto.builder()
+                        .user(convertToUserDto(activity.getActionUser()))
+                        .activity(convertToDetailedActivityDto(activity))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /*
+    *  헬퍼 메서드
+    * */
 
     private UserForFeedResponseDto convertToUserDto(User user) {
         return UserForFeedResponseDto.builder()
@@ -77,7 +94,8 @@ public class FeedService {
                 .build();
     }
 
-    private ActivityForFeedResponseDto convertToActivityDto(Activity activity) {
+    // 기본 활동 정보를 DTO로 변환하는 메서드
+    private ActivityForFeedResponseDto convertToBasicActivityDto(Activity activity) {
         return ActivityForFeedResponseDto.builder()
                 .id(activity.getId())
                 .activityType(activity.getActivityType().name())
@@ -105,7 +123,44 @@ public class FeedService {
                 .collect(Collectors.toList());
     }
 
+    // 상세 활동 정보를 DTO로 변환하는 메서드
+    private ActivityForFeedResponseDto convertToDetailedActivityDto(Activity activity) {
+        UserForFeedResponseDto userDto = convertToUserDto(activity.getActionUser());
+        switch (activity.getActivityType()) {
+            case COMMENT:
+                if (activity instanceof Comment) {
+                    Comment comment = (Comment) activity;
+                    return ActivityForFeedResponseDto.builder()
+                            .id(comment.getId())
+                            .activityType(comment.getActivityType().name())
+                            .content(comment.getContent())
+                            .commentedBy(userDto)
+                            .build();
+                }
+            case LIKE:
+                if (activity instanceof Likes) {
+                    Likes like = (Likes) activity;
+                    return ActivityForFeedResponseDto.builder()
+                            .id(like.getId())
+                            .activityType(like.getActivityType().name())
+                            .likedBy(userDto)
+                            .build();
+                }
+            case POST:
+                if (activity instanceof Post){
+                    Post post = (Post) activity;
+                    return ActivityForFeedResponseDto.builder()
+                            .id(post.getId())
+                            .activityType(post.getActivityType().name())
+                            .content(post.getContent())
+                            .build();
+                }
 
-
+            case FOLLOW:
+                return convertToBasicActivityDto(activity);
+            default:
+                return convertToBasicActivityDto(activity);
+        }
+    }
 
 }

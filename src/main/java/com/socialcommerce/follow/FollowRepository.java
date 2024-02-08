@@ -4,6 +4,10 @@ import com.socialcommerce.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 import java.util.Optional;
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     Logger log = LoggerFactory.getLogger(FollowRepository.class);
@@ -31,4 +35,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
         findByActionUserAndTargetUser(actionUser, targetUser)
                 .ifPresent(this::delete);
     }
+
+    @Query("SELECT f.actionUser.id FROM Follow f WHERE f.targetUser.id = :userId")
+    List<Long> findFollowerIdsByUserId(@Param("userId") Long userId);
 }

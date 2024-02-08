@@ -38,7 +38,6 @@ public class FeedController {
     public ResponseEntity<List<FeedResponseDto>> getUserPostsActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         try{
             List<FeedResponseDto> feeds = feedService.getUserPostsActivities(customUserDetails.getUser().getId());
-            log.debug("(Controller) feeds 리스트 정보, feeds: {}", feeds);
             return new ResponseEntity<>(feeds, HttpStatus.OK);
         }catch (Exception e){
             throw new HttpException(
@@ -49,7 +48,19 @@ public class FeedController {
         }
     }
 
-
-
+    @GetMapping("/followers-activities")
+    public ResponseEntity<List<FeedResponseDto>> getFollowersActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        try{
+            List<FeedResponseDto> feeds = feedService.getFollowersActivities(customUserDetails.getUser().getId());
+            return new ResponseEntity<>(feeds, HttpStatus.OK);
+        }catch (Exception e){
+            log.error("Error fetching followers activities 오류 내용 확인", e);
+            throw new HttpException(
+                    false,
+                    "나를 팔로우하는 유저들의 활동 피드 가져오기 실패",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 
 }

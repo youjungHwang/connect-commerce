@@ -2,10 +2,8 @@ package com.socialcommerce.feed.controller;
 
 import com.socialcommerce.auth.CustomUserDetails;
 import com.socialcommerce.dto.common.HttpException;
-import com.socialcommerce.feed.Feed;
 import com.socialcommerce.feed.dto.FeedResponseDto;
 import com.socialcommerce.feed.service.FeedService;
-import com.socialcommerce.post.dto.CreatePostRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,8 +24,6 @@ public class FeedController {
     public ResponseEntity<List<FeedResponseDto>> getFollowingUsersActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         try{
             List<FeedResponseDto> feeds = feedService.getFollowingUsersActivities(customUserDetails.getUser().getId());
-            log.debug("(Controller) feeds 리스트 정보, feeds: {}", feeds);
-            // [Feed{id=null, user=com.socialcommerce.user.User@47bee1f4, targetUser=com.socialcommerce.user.User@550a177, activity=Follow{id=1, actionUser=2, targetUser=1}}]
             return new ResponseEntity<>(feeds, HttpStatus.OK);
         }catch (Exception e){
             throw new HttpException(
@@ -37,6 +33,23 @@ public class FeedController {
             );
         }
     }
+
+    @GetMapping("/my-posts-activities")
+    public ResponseEntity<List<FeedResponseDto>> getUserPostsActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        try{
+            List<FeedResponseDto> feeds = feedService.getUserPostsActivities(customUserDetails.getUser().getId());
+            log.debug("(Controller) feeds 리스트 정보, feeds: {}", feeds);
+            return new ResponseEntity<>(feeds, HttpStatus.OK);
+        }catch (Exception e){
+            throw new HttpException(
+                    false,
+                    "내 포스트의 상황(댓글, 좋아요) 가져오기 실패",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+
 
 
 }

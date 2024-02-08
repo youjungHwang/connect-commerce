@@ -26,13 +26,16 @@ public class Post extends Activity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "relatedActivity", cascade = CascadeType.ALL)
+    private List<Likes> likes = new ArrayList<>();
+
     @Builder
-    public Post(Long id, User actionUser, String content, List<Comment> comments) {
+    public Post(Long id, User actionUser, String content, List<Comment> comments, List<Likes> likes) {
         super(id, actionUser); // Activity 클래스에 있는 생성자를 호출
         this.content = content;
         this.comments = comments;
+        this.likes = likes;
     }
-
     @Override
     public ActivityType getActivityType() {
         return ActivityType.POST;
@@ -45,6 +48,7 @@ public class Post extends Activity {
                 ", actionUser=" + (getActionUser() != null ? getActionUser().getId() : "null") +
                 ", content='" + content + '\'' +
                 ", commentsCount=" + (comments != null ? comments.size() : 0) +
+                ", likesCount=" + (likes != null ? likes.size() : 0) +
                 '}';
     }
 

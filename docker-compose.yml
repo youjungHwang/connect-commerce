@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  social-commerce:
+    image: kleahwang/social-commerce:latest
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.28
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "13306:3306"
+    volumes:
+      - "mysql-data:/var/lib/mysql"
+
+volumes:
+  mysql-data:

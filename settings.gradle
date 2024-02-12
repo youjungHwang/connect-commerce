@@ -1,0 +1,6 @@
+rootProject.name = 'social-commerce'
+include 'user_service'
+include 'activity_service'
+include 'newsfeed_service'
+include 'service_discovery'
+include 'apigateway_service'

@@ -129,4 +129,13 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
+
+    /**
+     * [activity-service] 통신을 위한 메서드
+     */
+    // 토큰에서 userId 추출 메서드
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.get("userId", Long.class);
+    }
 }

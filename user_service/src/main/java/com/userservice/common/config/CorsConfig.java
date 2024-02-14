@@ -19,7 +19,9 @@ public class CorsConfig {
         config.addAllowedMethod("*");
 
         source.registerCorsConfiguration("/actuator/info", config);
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/user-service/api/**", config);
+        source.registerCorsConfiguration("/activity-service/api/**", config);
+        source.registerCorsConfiguration("/newsfeed-service/api/**", config);
         return new CorsFilter(source);
     }
 }

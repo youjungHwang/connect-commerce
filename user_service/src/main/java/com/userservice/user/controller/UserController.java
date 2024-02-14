@@ -11,14 +11,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("api/v1/users")
+@RequestMapping("/user-service")
 @RestController
 public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
+    @PatchMapping("/api/v1/users/{userId}")
+    public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId,
+                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                           @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
+        System.out.println(">>>>>>> UserController 들어옴 ");
         if(userId.equals(customUserDetails.getUser().getId())) {
             userService.userProfileUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
@@ -35,8 +38,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<HttpException> userPasswordUpdate(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
+    @PutMapping("/api/v1/users/{userId}")
+    public ResponseEntity<HttpException> userPasswordUpdate(@PathVariable Long userId,
+                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                            @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
         if(userId.equals(customUserDetails.getUser().getId())) {
             userService.userPasswordUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
@@ -51,6 +56,16 @@ public class UserController {
                     HttpStatus.FORBIDDEN
             );
         }
+    }
+
+    /**
+     * [activity-service] 통신을 위한 메서드
+     */
+    @GetMapping("/api/v1/users/{userId}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long userId) {
+        boolean exists = userService.existsById(userId);
+        System.out.println("아이디에 해당하는 유저 존재여부 :" + exists);
+        return ResponseEntity.ok(exists);
     }
 
 

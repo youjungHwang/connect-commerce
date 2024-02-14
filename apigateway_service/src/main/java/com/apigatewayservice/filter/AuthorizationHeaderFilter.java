@@ -1,11 +1,10 @@
 package com.apigatewayservice.filter;
 
-import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
+import com.apigatewayservice.TokenProvider;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -18,26 +17,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.crypto.SecretKey;
 
 @Slf4j
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
 
-    private static SecretKey key;
+    private final TokenProvider tokenProvider;
 
     @Value("${jwt.secret}")
     private String secret;
 
-    public AuthorizationHeaderFilter(String secret) {
-        byte[] decodedKey = Base64.getDecoder().decode(secret);
-        log.debug("AuthorizationHeaderFilter -  decodedKey 내용: {}", decodedKey);
-        this.key = Keys.hmacShaKeyFor(decodedKey);
-        log.debug("AuthorizationHeaderFilter -  key 내용: {}", key);
-    }
-
-    public AuthorizationHeaderFilter() {
+    public AuthorizationHeaderFilter(TokenProvider tokenProvider) {
         super(Config.class);
+        this.tokenProvider = tokenProvider;
     }
     public static class Config {}
 
@@ -56,13 +48,17 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String authorization =
                     Objects.requireNonNull(request.getHeaders().get(HttpHeaders.AUTHORIZATION)).get(0);
             String token = authorization.replace("Bearer", "").trim();
+            log.debug("AuthorizationHeaderFilter - token:{}", token);
 
 
             // 토큰 검증
-            if (!validateToken(token)) {
-                log.warn("유효하지 않은 AuthorizationHeaderFilter Token 입니다.");
-                return handleUnAuthorized(exchange);
-            }
+            Claims claims = tokenProvider.parseClaims(token);
+            log.info("AuthorizationHeaderFilter - claims:{}", claims);
+
+//            if (!validateToken(token)) {
+//                log.warn("유효하지 않은 AuthorizationHeaderFilter Token 입니다.");
+//                return handleUnAuthorized(exchange);
+//            }
 
             return chain.filter(exchange.mutate()
                     .request(request)
@@ -107,7 +103,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
      * 토큰에서 Claims 추출하는 메서드
      */
     private Claims parseClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
+        return Jwts.parserBuilder().setSigningKey(secret).build()
                 .parseClaimsJws(token)
                 .getBody();
     }

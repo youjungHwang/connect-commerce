@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "user-service")
 public interface UserServiceClient {
 
-    @GetMapping("/api/v1/users/my-info")
-    UserIdAndEmailFromJwtDto getUserIdAndEmailFromJwt(@RequestHeader("Authorization") String bearerToken);
 
 }
 

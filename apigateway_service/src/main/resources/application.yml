@@ -11,12 +11,53 @@ eureka:
 spring:
   application:
     name: apigateway-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/community_commerce_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 5032
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create # create none update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     gateway:
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/**
+            - Path=/user-service/api/v1/auth/**
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/api/v1/users/**
+          filters:
+            - name: AuthorizationHeaderFilter
+        - id: activity-service
+          uri: lb://ACTIVITY-SERVICE
+          predicates:
+            - Path=/activity-service/**
+          filters:
+            - name: AuthorizationHeaderFilter
+        - id: newsfeed-service
+          uri: lb://NEWSFEED-SERVICE
+          predicates:
+            - Path=/newsfeed-service/**
+          filters:
+            - name: AuthorizationHeaderFilter
+
+logging:
+  level:
+    ROOT: DEBUG
+  path: ./
+
+jwt:
+  secret: StCFPUF/xyPmMs+4ioxso1RQUYm4fWZyaJtcB9OSosK5/z5J76PgaVpahYUwew27hk9aEAPrK6/JN71+OzliEA==
+
 
 

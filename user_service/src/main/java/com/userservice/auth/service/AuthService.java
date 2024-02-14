@@ -2,6 +2,7 @@ package com.userservice.auth.service;
 
 import com.userservice.auth.dto.TokenDto;
 import com.userservice.auth.dto.TokenRequestDto;
+import com.userservice.auth.security.CustomUserDetails;
 import com.userservice.auth.security.RefreshToken;
 import com.userservice.auth.security.RefreshTokenRepository;
 import com.userservice.auth.security.TokenProvider;
@@ -35,9 +36,9 @@ public class AuthService {
 
         User user = loginRequestDto.toUser(passwordEncoder);
         User savedUser = userRepository.save(user);
-        log.debug("저장된 User 객체의 ID: {}", savedUser.getId());
         return LoginResponseDto.loginResponseDto(savedUser);
     }
+
     @Transactional
     public TokenDto login(LoginRequestDto loginRequestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
@@ -83,4 +84,29 @@ public class AuthService {
 
         return tokenDto;
     }
+
+    @Transactional
+    public void logout(TokenRequestDto tokenRequestDto) {
+        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+
+        refreshTokenRepository.findByKey(authentication.getName())
+                .ifPresent(refreshToken -> {
+                    refreshTokenRepository.delete(refreshToken);
+                    log.debug("로그아웃 처리: 리프레시 토큰 삭제");
+                });
+    }
+
+    /**
+     * [activity-service] 통신을 위한 메서드
+     */
+    public Long getUserIdFromLogin(LoginRequestDto loginRequestDto) {
+        TokenDto tokenDto = login(loginRequestDto);
+        if (tokenDto == null) {
+            throw new RuntimeException("로그인 실패");
+        }
+        Long userId = tokenProvider.getUserIdFromToken(tokenDto.getAccessToken());
+        return userId;
+    }
+
+
 }

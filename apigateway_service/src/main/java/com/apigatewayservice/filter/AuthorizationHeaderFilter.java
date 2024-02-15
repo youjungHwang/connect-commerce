@@ -1,5 +1,6 @@
 package com.apigatewayservice.filter;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 
@@ -55,14 +57,15 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             Claims claims = tokenProvider.parseClaims(token);
             log.info("AuthorizationHeaderFilter - claims:{}", claims);
 
-//            if (!validateToken(token)) {
-//                log.warn("유효하지 않은 AuthorizationHeaderFilter Token 입니다.");
-//                return handleUnAuthorized(exchange);
-//            }
-
-            return chain.filter(exchange.mutate()
-                    .request(request)
-                    .build());
+            /**
+             *  쿼리파라미터를 추가한 새로운 URI, 새로운 ServerHttpRequest 에 담아서 다음 필터로 넘겨준다.
+             *  ?member=127 (인증회원 id)
+             */
+            final Long principalId = tokenProvider.getUserIdFromToken(token);
+            final URI newUri = addParam(request.getURI(), "member", principalId);
+            final ServerHttpRequest modifiedRequest = exchange.getRequest().mutate().uri(newUri).build();
+            log.info("AuthorizationHeaderFilter - modifiedRequest:{}", modifiedRequest);
+            return chain.filter(exchange.mutate().request(modifiedRequest).build());
         });
     }
 
@@ -74,38 +77,23 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return response.setComplete();
     }
 
-//    public boolean validateToken(String token) {
-//        try {
-//            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-//            return true;
-//        }catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-//            log.info("잘못된 JWT 서면입니다.");
-//        }catch(ExpiredJwtException e) {
-//            log.info("만료된 JWT 토큰입니다.");
-//        }catch(UnsupportedJwtException e) {
-//            log.info("지원되지 않는 JWT토큰입니다.");
-//        }catch (IllegalArgumentException e) {
-//            log.info("JWT 토큰이 잘못되었습니다.");
-//        }
-//        return false;
-//    }
-
-    /**
-     * 토큰이 유효한지 확인하는 메서드
-     */
     public boolean validateToken(String token) {
         Claims claims = parseClaims(token);
         log.debug("AuthorizationHeaderFilter -  claim 내용: {}", claims);
         return claims.getExpiration().after(new Date());
     }
 
-    /**
-     * 토큰에서 Claims 추출하는 메서드
-     */
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(secret).build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private URI addParam(URI uri, String name, Long value) {
+        return UriComponentsBuilder.fromUri(uri)
+                .queryParam(name, value)
+                .build(true)
+                .toUri();
     }
 
 

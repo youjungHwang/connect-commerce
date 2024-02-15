@@ -7,7 +7,6 @@
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.web.bind.annotation.*;
 //
 //import java.util.List;
@@ -20,9 +19,10 @@
 //    private final FeedService feedService;
 //
 //    @GetMapping("/api/v1/feeds/followings-activities")
-//    public ResponseEntity<List<FeedResponseDto>> getFollowingUsersActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+//    public ResponseEntity<List<FeedResponseDto>> getFollowingUsersActivities(@RequestParam(name = "member") final Long principalId)
+//    {
 //        try{
-//            List<FeedResponseDto> feeds = feedService.getFollowingUsersActivities(customUserDetails.getUser().getId());
+//            List<FeedResponseDto> feeds = feedService.getFollowingUsersActivities(principalId);
 //            return new ResponseEntity<>(feeds, HttpStatus.OK);
 //        }catch (Exception e){
 //            throw new HttpException(
@@ -34,9 +34,9 @@
 //    }
 //
 //    @GetMapping("/api/v1/feeds/my-posts-activities")
-//    public ResponseEntity<List<FeedResponseDto>> getUserPostsActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+//    public ResponseEntity<List<FeedResponseDto>> getUserPostsActivities(@RequestParam(name = "member") final Long principalId){
 //        try{
-//            List<FeedResponseDto> feeds = feedService.getUserPostsActivities(customUserDetails.getUser().getId());
+//            List<FeedResponseDto> feeds = feedService.getUserPostsActivities(principalId);
 //            return new ResponseEntity<>(feeds, HttpStatus.OK);
 //        }catch (Exception e){
 //            throw new HttpException(
@@ -48,9 +48,9 @@
 //    }
 //
 //    @GetMapping("/api/v1/feeds/followers-activities")
-//    public ResponseEntity<List<FeedResponseDto>> getFollowersActivities(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+//    public ResponseEntity<List<FeedResponseDto>> getFollowersActivities(@RequestParam(name = "member") final Long principalId){
 //        try{
-//            List<FeedResponseDto> feeds = feedService.getFollowersActivities(customUserDetails.getUser().getId());
+//            List<FeedResponseDto> feeds = feedService.getFollowersActivities(principalId);
 //            return new ResponseEntity<>(feeds, HttpStatus.OK);
 //        }catch (Exception e){
 //            log.error("Error fetching followers activities 오류 내용 확인", e);

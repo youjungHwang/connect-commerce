@@ -21,7 +21,6 @@ public class UserController {
     public ResponseEntity<HttpException> userProfileUpdate(@PathVariable Long userId,
                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                            @RequestBody UserProfileUpdateRequestDto userProfileUpdateDto){
-        System.out.println(">>>>>>> UserController 들어옴 ");
         if(userId.equals(customUserDetails.getUser().getId())) {
             userService.userProfileUpdate(userId, userProfileUpdateDto);
             throw new HttpException(
@@ -59,15 +58,14 @@ public class UserController {
     }
 
     /**
-     * [activity-service] 통신을 위한 메서드
+     * [activity-service] 통신시 사용
      */
     @GetMapping("/api/v1/users/{userId}")
     public ResponseEntity<Boolean> existsById(@PathVariable Long userId) {
-        boolean exists = userService.existsById(userId);
-        System.out.println("아이디에 해당하는 유저 존재여부 :" + exists);
-        return ResponseEntity.ok(exists);
+        if(!userService.existsById(userId)) {
+            throw new RuntimeException("존재하지 않는 유저입니다.");
+        }
+        return ResponseEntity.ok(true);
     }
-
-
 }
 

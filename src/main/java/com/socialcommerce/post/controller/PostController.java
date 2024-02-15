@@ -26,7 +26,7 @@ public class PostController {
     /*
     * 포스트 API
     * */
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<HttpException> createPost(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                     @RequestBody CreatePostRequestDto createPostRequestDto){
 
@@ -38,7 +38,6 @@ public class PostController {
                 HttpStatus.OK
         );
     }
-
 
     @PutMapping("/{postId}")
     public ResponseEntity<HttpException> updatePost(){

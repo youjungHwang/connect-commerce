@@ -1,18 +1,13 @@
 package com.userservice.auth.controller;
 
-
 import com.userservice.auth.dto.TokenDto;
 import com.userservice.auth.dto.TokenRequestDto;
 import com.userservice.auth.dto.LoginRequestDto;
 import com.userservice.auth.dto.LoginResponseDto;
-import com.userservice.auth.security.CustomUserDetails;
 import com.userservice.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -46,31 +41,6 @@ public class AuthController {
     public ResponseEntity<Void> logout(@RequestBody TokenRequestDto tokenRequestDto) {
         authService.logout(tokenRequestDto);
         return ResponseEntity.ok().build();
-    }
-
-    /**
-     * [activity-service] 통신을 위한 메서드 -> 정상 동작
-     */
-    @GetMapping("/api/v1/auth/user-email")
-    public ResponseEntity<String> getUserEmailFromLogin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String email = userDetails.getUser().getEmail();
-            return ResponseEntity.ok(email);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
-    }
-
-    @GetMapping("/api/v1/auth/user-id")
-    public ResponseEntity<Long> getUserIdFromLogin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Long userId = userDetails.getUser().getId();
-            return ResponseEntity.ok(userId);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
 }

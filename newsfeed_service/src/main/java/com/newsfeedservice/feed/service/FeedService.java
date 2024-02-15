@@ -16,14 +16,20 @@
 //@RequiredArgsConstructor
 //@Service
 //public class FeedService {
+//    // 응답을 합치지 않고, 특정 사람마다 피드를 가져옴 (리스트 아이디 반환)
+//    // 누가 누구에게 뭘했다.(타입) + 시간 아이디클릭, 요구사항문제
+//
 //    @Transactional
-//    public List<FeedResponseDto> getFollowingUsersActivities(Long userId){
-//        List<Long> followingIds = userRepository.findFollowingIdsByUserId(userId);
+//    public List<FeedResponseDto> getFollowingUsersActivities(Long principalId){
+//        //followingIds로 feedrepository호출 리스트 피드 가져오기 !! (feed, feedrepo 활용)
+//        List<Long> followingIds = userRepository.findFollowingIdsByUserId(principalId);
+//        // activityRepository로 가져올 필요가 없다.
 //        List<Activity> activities = activityRepository.findActivitiesByFollowingIds(followingIds);
+//        // activities 너무 많다면? -> 아이디만 뽑아서 가져오기. (리스트 or 페이지) + 최신 몇 개, 최대 몇 개 / 페이지 단위로
 //        return activities.stream()
 //                .map(activity -> FeedResponseDto.builder()
-//                        .user(convertToUserDto(activity.getActionUser()))
-//                        .targetUser(convertToUserDto(activity.getTargetUser()))
+//                        .user(convertToUserDto(activity.getActionUserId()))
+//                        .targetUser(convertToUserDto(activity.getTargetUserId()))
 //                        .activity(convertToBasicActivityDto(activity))
 //                        .build())
 //                .collect(Collectors.toList());
@@ -31,6 +37,7 @@
 //
 //    @Transactional
 //    public List<FeedResponseDto> getUserPostsActivities(Long userId){
+//        // feedrepo사용해볼 것
 //        List<Post> userPosts = postRepository.findAllByActionUserId(userId);
 //
 //        List<FeedResponseDto> feedResponses = new ArrayList<>();

@@ -11,14 +11,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "follow_uq",
-                        columnNames = {"action_user_id", "target_user_id"}
-                )
-        }
-)
 @DiscriminatorValue("FOLLOW")
 @Entity
 public class Follow extends Activity {

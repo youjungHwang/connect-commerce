@@ -92,7 +92,7 @@ public class AuthService {
         refreshTokenRepository.findByKey(authentication.getName())
                 .ifPresent(refreshToken -> {
                     refreshTokenRepository.delete(refreshToken);
-                    log.debug("로그아웃 처리: 리프레시 토큰 삭제");
+                    log.info("로그아웃 처리: 리프레시 토큰 삭제");
                 });
     }
 

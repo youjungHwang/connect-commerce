@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -33,5 +35,11 @@ public class UserService {
     public boolean existsById(Long userId) {
         return userRepository.existsById(userId);
     }
+
+    @Transactional(readOnly = true)
+    public Optional<String> getUsername(Long userId) {
+        return userRepository.findUsernameById(userId);
+    }
+
 
 }

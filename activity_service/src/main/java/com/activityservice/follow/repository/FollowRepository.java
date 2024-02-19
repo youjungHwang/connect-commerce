@@ -26,6 +26,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
                 .ifPresent(this::delete);
     }
 
+    // 특정 사용자가 팔로우하는 사람들의 목록 조회
+    @Query("SELECT f.targetUserId FROM Follow f WHERE f.actionUserId = :userId")
+    List<Long> getFollowingUserIds(@Param("userId") Long userId);
+
+    // 특정 사용자를 팔로우하는 사람들의 목록 조회
     @Query("SELECT f.actionUserId FROM Follow f WHERE f.targetUserId = :userId")
-    List<Long> findFollowerIdsByUserId(@Param("userId") Long userId);
+    List<Long> getFollowerUserIds(@Param("userId") Long userId);
+
 }

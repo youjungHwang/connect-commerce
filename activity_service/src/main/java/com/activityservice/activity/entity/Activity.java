@@ -18,10 +18,10 @@ public abstract class Activity extends BaseTimeEntity {
     private Long id;
 
     @Column(name = "action_user_id")
-    private Long actionUserId; // User 엔티티 대신 사용자 ID를 저장
+    private Long actionUserId;
 
     @Column(name = "target_user_id", nullable = true)
-    private Long targetUserId; // User 엔티티 대신 사용자 ID를 저장
+    private Long targetUserId;
 
     public Activity(Long id, Long actionUserId) {
         super();

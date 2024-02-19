@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/activity-service")
@@ -17,9 +16,8 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/api/v1/follow/{toUserId}")
-    public ResponseEntity<HttpException> follow(@RequestParam(name = "member") final Long principalId,
-                                                @PathVariable Long toUserId) {
-        log.info("FollowController - follow 진입");
+    public ResponseEntity<HttpException> follow(@PathVariable Long toUserId,
+                                                @RequestParam(name = "member") final Long principalId) {
         followService.follow(principalId, toUserId);
 
         throw new HttpException(
@@ -32,7 +30,6 @@ public class FollowController {
     @DeleteMapping("/api/v1/follow/{toUserId}")
     public ResponseEntity<HttpException> unFollow(@RequestParam(name = "member") final Long principalId,
                                                   @PathVariable Long toUserId) {
-        log.info("FollowController - unFollow 진입");
         followService.unFollow(principalId, toUserId);
         throw new HttpException(
                 true,
@@ -40,4 +37,5 @@ public class FollowController {
                 HttpStatus.OK
         );
     }
+
 }

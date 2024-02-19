@@ -47,6 +47,8 @@ public class SecurityConfig{
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/user-service/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/user-service/api/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/newsfeed-service/api/v1/newsfeed/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/activity-service/api/v1/follow/followings/ids").permitAll()
                         .anyRequest().authenticated())
                 .logout((logout) -> logout
                         .logoutSuccessUrl("/login")

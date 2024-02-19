@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -60,4 +64,10 @@ public class FollowService {
         // 팔로우 관계를 삭제
         followRepository.removeFollow(principalId, toUserId);
     }
+
+    public List<Long> getFollowingUserIds(Long principalId) {
+        return followRepository.getFollowingUserIds(principalId);
+    }
+
+
 }

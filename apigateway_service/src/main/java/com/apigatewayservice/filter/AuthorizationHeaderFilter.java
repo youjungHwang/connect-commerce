@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.Objects;
 
-import com.apigatewayservice.TokenProvider;
+import com.apigatewayservice.security.TokenProvider;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +59,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
             /**
              *  쿼리파라미터를 추가한 새로운 URI, 새로운 ServerHttpRequest 에 담아서 다음 필터로 넘겨준다.
-             *  ?member=127 (인증회원 id)
+             *  ?member=100 (인증회원 id)
              */
             final Long principalId = tokenProvider.getUserIdFromToken(token);
             final URI newUri = addParam(request.getURI(), "member", principalId);
@@ -95,7 +95,5 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                 .build(true)
                 .toUri();
     }
-
-
 
 }

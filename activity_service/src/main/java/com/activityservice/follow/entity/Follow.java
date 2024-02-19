@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("FOLLOW")
 @Entity
 public class Follow extends Activity {
+
     @Builder
     public Follow(Long id, Long actionUserId, Long targetUserId) {
         // Activity 기본 생성자를 호출하여 사용자 ID를 설정

@@ -1,6 +1,5 @@
 ## Welcome to ConnectCommerce
 
-친구들과 소통하며, 가장 인기 있는 상품을 구매하고, 자신의 쇼핑 경험을 공유할 수 있는 공간을 제공합니다.
 
 ## Docker 설정
 
